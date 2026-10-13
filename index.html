@@ -1,114 +1,380 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Our Little Date ♡</title>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100dvh; overflow: hidden; font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(125deg,#fbd9e7,#f5b2d0,#f9cbdc); background-size: 250% 250%; animation: gradient 12s ease infinite; color: #a72d60; }
-    main { min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 22px; text-align: center; }
-    h1 { font-size: clamp(24px, 5vw, 38px); margin: 0 0 22px; }
-    .panda { width: min(255px, 70vw); aspect-ratio: 1; object-fit: cover; border-radius: 22px; animation: bob 2.5s ease-in-out infinite; box-shadow: 0 12px 35px #a93c6620; }
-    .buttons { display: flex; gap: 18px; justify-content: center; align-items: center; margin-top: 24px; min-height: 54px; }
-    button { cursor: pointer; border: 0; border-radius: 12px; padding: 13px 28px; color: white; font-weight: 700; font-size: 17px; box-shadow: 0 5px 12px #953f6225; }
-    #yesBtn, #planBtn { background: #45a653; }
-    #yesBtn:hover, #planBtn:hover { background: #348e41; }
-    
-#noBtn {
-  background: #e74c3c;
-  position: relative;
-  z-index: 10;
-  touch-action: none;
-  transition: left 0.45s ease-out,
-              top 0.45s ease-out;
-  will-change: left, top;
-}
 
-    #planBtn { margin-top: 24px; background: #dc6997; }
-    .hidden { display: none !important; }
-    p { font-size: 19px; line-height: 1.6; }
-    @keyframes bob { 50% { transform: translateY(-10px); } }
-    @keyframes gradient { 50% { background-position: 100% 50%; } }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(
+        120deg,
+        #f9d6e8,
+        #f4a6c8,
+        #e889b4,
+        #f8c4df
+      );
+      background-size: 300% 300%;
+      animation: gradientMove 10s ease infinite;
+    }
+
+    .container {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #a32357;
+      font-size: clamp(25px, 5vw, 42px);
+      margin-bottom: 25px;
+    }
+
+    h2, p {
+      color: #a32357;
+    }
+
+    .panda {
+      width: 230px;
+      max-width: 70vw;
+      height: auto;
+      border-radius: 20px;
+      margin: 15px 0;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 25px;
+      margin-top: 30px;
+      min-height: 55px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 28px;
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    #yesBtn {
+      background: #4caf50;
+      box-shadow: 0 4px 12px #a0cfa2;
+      transition: transform 0.2s;
+    }
+
+    #yesBtn:hover {
+      transform: scale(1.15);
+    }
+
+    #noBtn {
+      background: #e74c3c;
+      position: relative;
+      z-index: 10;
+      touch-action: none;
+      will-change: transform;
+    }
+
+    .nextBtn {
+      background: #e879a2;
+      margin-top: 20px;
+      transition: transform 0.2s;
+    }
+
+    .nextBtn:hover {
+      transform: scale(1.08);
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-12px);
+      }
+    }
+
+    @keyframes gradientMove {
+      0%, 100% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <main>
-    <h1 id="heading">Will you go on a date with me? 💕</h1>
-    <img class="panda" src="panda.jpg" alt="Cute panda holding a pink donut">
-    <div class="buttons" id="choices">
-      <button id="yesBtn" type="button">Yes 💚</button>
-      <button id="noBtn" type="button">No ❤️</button>
+
+  <main class="container" id="main">
+
+    <h1>Will you go on a date with me? 💕</h1>
+
+    <img
+      src="panda.jpg"
+      class="panda"
+      alt="Cute panda holding a donut"
+    >
+
+    <div class="buttons">
+      <button id="yesBtn">Yes 💚</button>
+      <button id="noBtn">No ❤️</button>
     </div>
-    <div id="celebration" class="hidden" aria-live="polite">
-      <p>YAYYYYY!! 💗<br>Now let's plan our date ♡</p>
-      <button id="planBtn" type="button">Plan Our Date →</button>
-    </div>
+
   </main>
+
   <script>
-    const noBtn = document.getElementById('noBtn');
-    let lastMove = 0;
-    
-function moveNoButton() {
-  const margin = 15;
-  const width = noBtn.offsetWidth;
-  const height = noBtn.offsetHeight;
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
 
-  const maxX = Math.max(
-    margin,
-    window.innerWidth - width - margin
-  );
+    let floating = false;
+    let targetX = 0;
+    let targetY = 0;
+    let lastDodge = 0;
 
-  const maxY = Math.max(
-    margin,
-    window.innerHeight - height - margin
-  );
+    const dodgeDistance = 180;
+    const dangerRadius = 130;
+    const margin = 12;
 
-  const x = margin + Math.random() * (maxX - margin);
-  const y = margin + Math.random() * (maxY - margin);
+    // Prepare button for smooth movement.
+    // Its starting position stays exactly the same.
+    function initializeFloating() {
+      if (floating) return;
 
-  // Keep its current screen position before moving
-  const rect = noBtn.getBoundingClientRect();
+      const rect = noBtn.getBoundingClientRect();
 
-  if (noBtn.style.position !== "fixed") {
-    noBtn.style.transition = "none";
-    noBtn.style.position = "fixed";
-    noBtn.style.left = rect.left + "px";
-    noBtn.style.top = rect.top + "px";
+      // Fixed positioning preserves the current
+      // screen location before animation starts.
+      noBtn.style.position = "fixed";
+      noBtn.style.left = rect.left + "px";
+      noBtn.style.top = rect.top + "px";
+      noBtn.style.margin = "0";
 
-    // Force the browser to register the starting position
-    void noBtn.offsetWidth;
+      // Make sure the browser has applied
+      // the starting position.
+      void noBtn.offsetWidth;
 
-    noBtn.style.transition =
-      "left 0.45s ease-out, top 0.45s ease-out";
-  }
+      targetX = rect.left;
+      targetY = rect.top;
 
-  // Smoothly glide to its new position
-  requestAnimationFrame(() => {
-    noBtn.style.left = x + "px";
-    noBtn.style.top = y + "px";
-  });
-}
+      noBtn.style.transition =
+        "left 0.55s cubic-bezier(0.22, 1, 0.36, 1), " +
+        "top 0.55s cubic-bezier(0.22, 1, 0.36, 1)";
 
-    document.addEventListener('pointermove', (event) => {
-      if (event.pointerType === 'touch' || document.getElementById('choices').classList.contains('hidden')) return;
-      const r = noBtn.getBoundingClientRect();
-      if (Math.hypot(event.clientX - (r.left + r.width/2), event.clientY - (r.top + r.height/2)) < 105 && Date.now() - lastMove > 140) {
-        lastMove = Date.now(); dodge();
+      floating = true;
+    }
+
+    // Smoothly float away from the cursor.
+    function dodge(mouseX, mouseY) {
+      initializeFloating();
+
+      const rect = noBtn.getBoundingClientRect();
+
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      // Direction away from mouse
+      let dx = centerX - mouseX;
+      let dy = centerY - mouseY;
+
+      let distance = Math.hypot(dx, dy);
+
+      if (distance < 1) {
+        const angle = Math.random() * Math.PI * 2;
+        dx = Math.cos(angle);
+        dy = Math.sin(angle);
+        distance = 1;
+      }
+
+      dx /= distance;
+      dy /= distance;
+
+      // Calculate next location
+      let newX = rect.left + dx * dodgeDistance;
+      let newY = rect.top + dy * dodgeDistance;
+
+      // Keep button within the screen
+      const maxX = Math.max(
+        margin,
+        window.innerWidth - rect.width - margin
+      );
+
+      const maxY = Math.max(
+        margin,
+        window.innerHeight - rect.height - margin
+      );
+
+      newX = Math.max(margin, Math.min(maxX, newX));
+      newY = Math.max(margin, Math.min(maxY, newY));
+
+      // If trapped at an edge, choose another
+      // position with enough room to move.
+      if (
+        Math.hypot(
+          newX - rect.left,
+          newY - rect.top
+        ) < 45
+      ) {
+        const alternatives = [
+          { x: margin, y: margin },
+          { x: maxX, y: margin },
+          { x: margin, y: maxY },
+          { x: maxX, y: maxY },
+          { x: maxX / 2, y: margin },
+          { x: maxX / 2, y: maxY }
+        ];
+
+        alternatives.sort((a, b) => {
+          const distanceA = Math.hypot(
+            a.x - mouseX,
+            a.y - mouseY
+          );
+
+          const distanceB = Math.hypot(
+            b.x - mouseX,
+            b.y - mouseY
+          );
+
+          return distanceB - distanceA;
+        });
+
+        newX = alternatives[0].x;
+        newY = alternatives[0].y;
+      }
+
+      targetX = newX;
+      targetY = newY;
+
+      // CSS transition animates from the
+      // current position to the new position.
+      requestAnimationFrame(() => {
+        noBtn.style.left = targetX + "px";
+        noBtn.style.top = targetY + "px";
+      });
+    }
+
+    // Detect when the mouse gets close.
+    document.addEventListener("pointermove", (event) => {
+      if (event.pointerType === "touch") return;
+
+      const rect = noBtn.getBoundingClientRect();
+
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      const distance = Math.hypot(
+        event.clientX - centerX,
+        event.clientY - centerY
+      );
+
+      if (
+        distance < dangerRadius &&
+        Date.now() - lastDodge > 550
+      ) {
+        lastDodge = Date.now();
+        dodge(event.clientX, event.clientY);
       }
     });
-    noBtn.addEventListener('pointerdown', event => { event.preventDefault(); dodge(); });
-    noBtn.addEventListener('click', event => { event.preventDefault(); dodge(); });
-    noBtn.addEventListener('focus', dodge);
-    document.getElementById('yesBtn').addEventListener('click', () => {
-      document.getElementById('heading').textContent = 'She said YES!! 💖';
-      document.getElementById('choices').classList.add('hidden');
-      document.getElementById('celebration').classList.remove('hidden');
+
+    // Dodge when someone tries tapping on mobile.
+    noBtn.addEventListener("touchstart", (event) => {
+      event.preventDefault();
+
+      const touch = event.touches[0];
+
+      dodge(touch.clientX, touch.clientY);
+    }, { passive: false });
+
+    // Fallback if the No button is clicked.
+    noBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      const rect = noBtn.getBoundingClientRect();
+
+      dodge(
+        rect.left + rect.width / 2,
+        rect.top + rect.height / 2
+      );
     });
-    document.getElementById('planBtn').addEventListener('click', () => {
-      alert('Page 2 is coming next! 🍝');
+
+    // Keep the floating button on screen
+    // if the browser window changes size.
+    window.addEventListener("resize", () => {
+      if (!floating) return;
+
+      const rect = noBtn.getBoundingClientRect();
+
+      const maxX = Math.max(
+        margin,
+        window.innerWidth - rect.width - margin
+      );
+
+      const maxY = Math.max(
+        margin,
+        window.innerHeight - rect.height - margin
+      );
+
+      noBtn.style.left =
+        Math.max(margin, Math.min(maxX, rect.left)) + "px";
+
+      noBtn.style.top =
+        Math.max(margin, Math.min(maxY, rect.top)) + "px";
     });
+
+    // Yes button celebration!
+    yesBtn.addEventListener("click", () => {
+      document.getElementById("main").innerHTML = `
+        <h1>YAYYYYY!! 💗</h1>
+
+        <img
+          src="panda.jpg"
+          class="panda"
+          alt="Happy panda"
+        >
+
+        <h2>I knew you'd say yes! 🥰</h2>
+
+        <p>Now let's plan our perfect date ♡</p>
+
+        <button
+          class="nextBtn"
+          onclick="startPlanning()"
+        >
+          Plan Our Date →
+        </button>
+      `;
+    });
+
+    // We'll connect this to Page 2 later.
+    function startPlanning() {
+      alert("Time to choose our dinner! 🍝");
+    }
   </script>
+
 </body>
 </html>
+
