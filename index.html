@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Little Date ♡</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff0f5;
+      text-align: center;
+      color: #633747;
+      padding: 30px 15px;
+    }
+
+    h1 {
+      color: #e76f98;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      max-width: 450px;
+      margin: 20px auto;
+      box-shadow: 0 4px 15px #e8c4d0;
+    }
+
+    button {
+      background: #f9dce6;
+      border: 2px solid transparent;
+      padding: 14px;
+      border-radius: 12px;
+      margin: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #f5b5ca;
+    }
+
+    button.selected {
+      background: #e76f98;
+      color: white;
+      border-color: #b83d68;
+    }
+
+    #save {
+      background: #e76f98;
+      color: white;
+      padding: 15px 35px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Our Little Date ♡</h1>
+  <p>Hi pretty girl! Let's plan our perfect date 💗</p>
+
+  <div class="card">
+    <h2>🍽️ What should we eat?</h2>
+    <div class="choices" data-category="dinner">
+      <button>Sushi 🍣</button>
+      <button>Italian 🍝</button>
+      <button>Korean BBQ 🥩</button>
+      <button>Surprise me 💕</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🎀 What should we do?</h2>
+    <div class="choices" data-category="activity">
+      <button>Pottery 🎨</button>
+      <button>Arcade 🎮</button>
+      <button>Movie 🎬</button>
+      <button>Beach sunset 🌅</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🍰 Dessert?</h2>
+    <div class="choices" data-category="dessert">
+      <button>Ice cream 🍦</button>
+      <button>Boba 🧋</button>
+      <button>Matcha 🍵</button>
+      <button>Cake 🍰</button>
+    </div>
+  </div>
+
+  <button id="save">Save My Choices 💌</button>
+  <p id="message"></p>
+
+  <script>
+    const selections = {};
+
+    document.querySelectorAll(".choices").forEach(group => {
+      const category = group.dataset.category;
+
+      group.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", () => {
+          group.querySelectorAll("button").forEach(b => {
+            b.classList.remove("selected");
+          });
+
+          button.classList.add("selected");
+          selections[category] = button.textContent;
+        });
+      });
+    });
+
+    document.getElementById("save").addEventListener("click", () => {
+      if (!selections.dinner ||
+          !selections.activity ||
+          !selections.dessert) {
+        document.getElementById("message").textContent =
+          "Please choose one option from each section 💗";
+        return;
+      }
+
+      localStorage.setItem(
+        "dateChoices",
+        JSON.stringify(selections)
+      );
+
+      document.getElementById("message").textContent =
+        "Your choices have been saved! 💕";
+    });
+
+    const saved = JSON.parse(
+      localStorage.getItem("dateChoices") || "{}"
+    );
+
+    Object.assign(selections, saved);
+
+    document.querySelectorAll(".choices").forEach(group => {
+      const category = group.dataset.category;
+
+      group.querySelectorAll("button").forEach(button => {
+        if (button.textContent === selections[category]) {
+          button.classList.add("selected");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
