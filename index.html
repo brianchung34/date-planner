@@ -81,12 +81,14 @@
       transform: scale(1.15);
     }
 
-    #noBtn {
-      background: #e74c3c;
-      position: relative;
-      z-index: 10;
-      touch-action: none;
-    }
+#noBtn {
+  background: #e74c3c;
+  position: relative;
+  z-index: 10;
+  touch-action: none;
+
+  transition: left 0.6s ease, top 0.6s ease;
+}
 
     @keyframes float {
       0%, 100% {
@@ -134,31 +136,46 @@
     let lastMove = 0;
 
     // Teleport No button to a random position
-    function moveNoButton() {
-      const margin = 15;
-      const width = noBtn.offsetWidth;
-      const height = noBtn.offsetHeight;
 
-      const maxX = Math.max(
-        margin,
-        window.innerWidth - width - margin
-      );
+function moveNoButton() {
+  const margin = 15;
+  const width = noBtn.offsetWidth;
+  const height = noBtn.offsetHeight;
 
-      const maxY = Math.max(
-        margin,
-        window.innerHeight - height - margin
-      );
+  const maxX = Math.max(
+    margin,
+    window.innerWidth - width - margin
+  );
 
-      const x = margin +
-        Math.random() * (maxX - margin);
+  const maxY = Math.max(
+    margin,
+    window.innerHeight - height - margin
+  );
 
-      const y = margin +
-        Math.random() * (maxY - margin);
+  const x = margin + Math.random() * (maxX - margin);
+  const y = margin + Math.random() * (maxY - margin);
 
-      noBtn.style.position = "fixed";
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
-    }
+  // Capture the button's current position
+  if (noBtn.style.position !== "fixed") {
+    const rect = noBtn.getBoundingClientRect();
+
+    noBtn.style.transition = "none";
+    noBtn.style.position = "fixed";
+    noBtn.style.left = rect.left + "px";
+    noBtn.style.top = rect.top + "px";
+
+    // Register the starting position
+    void noBtn.offsetWidth;
+
+    noBtn.style.transition =
+      "left 0.6s ease, top 0.6s ease";
+  }
+
+  // Float to the new position
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+}
+
 
     // Dodge when mouse approaches
     document.addEventListener("pointermove", (event) => {
