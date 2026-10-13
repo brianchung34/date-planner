@@ -14,7 +14,17 @@
     button { cursor: pointer; border: 0; border-radius: 12px; padding: 13px 28px; color: white; font-weight: 700; font-size: 17px; box-shadow: 0 5px 12px #953f6225; }
     #yesBtn, #planBtn { background: #45a653; }
     #yesBtn:hover, #planBtn:hover { background: #348e41; }
-    #noBtn { background: #e34c57; z-index: 20; touch-action: none; }
+    
+#noBtn {
+  background: #e74c3c;
+  position: relative;
+  z-index: 10;
+  touch-action: none;
+  transition: left 0.45s ease-out,
+              top 0.45s ease-out;
+  will-change: left, top;
+}
+
     #planBtn { margin-top: 24px; background: #dc6997; }
     .hidden { display: none !important; }
     p { font-size: 19px; line-height: 1.6; }
@@ -39,14 +49,48 @@
   <script>
     const noBtn = document.getElementById('noBtn');
     let lastMove = 0;
-    function dodge() {
-      const padding = 12;
-      const maxX = Math.max(padding, window.innerWidth - noBtn.offsetWidth - padding);
-      const maxY = Math.max(padding, window.innerHeight - noBtn.offsetHeight - padding);
-      noBtn.style.position = 'fixed';
-      noBtn.style.left = (padding + Math.random() * (maxX - padding)) + 'px';
-      noBtn.style.top = (padding + Math.random() * (maxY - padding)) + 'px';
-    }
+    
+function moveNoButton() {
+  const margin = 15;
+  const width = noBtn.offsetWidth;
+  const height = noBtn.offsetHeight;
+
+  const maxX = Math.max(
+    margin,
+    window.innerWidth - width - margin
+  );
+
+  const maxY = Math.max(
+    margin,
+    window.innerHeight - height - margin
+  );
+
+  const x = margin + Math.random() * (maxX - margin);
+  const y = margin + Math.random() * (maxY - margin);
+
+  // Keep its current screen position before moving
+  const rect = noBtn.getBoundingClientRect();
+
+  if (noBtn.style.position !== "fixed") {
+    noBtn.style.transition = "none";
+    noBtn.style.position = "fixed";
+    noBtn.style.left = rect.left + "px";
+    noBtn.style.top = rect.top + "px";
+
+    // Force the browser to register the starting position
+    void noBtn.offsetWidth;
+
+    noBtn.style.transition =
+      "left 0.45s ease-out, top 0.45s ease-out";
+  }
+
+  // Smoothly glide to its new position
+  requestAnimationFrame(() => {
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  });
+}
+
     document.addEventListener('pointermove', (event) => {
       if (event.pointerType === 'touch' || document.getElementById('choices').classList.contains('hidden')) return;
       const r = noBtn.getBoundingClientRect();
