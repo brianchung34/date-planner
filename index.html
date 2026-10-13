@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Our Little Date ♡</title>
 
   <style>
@@ -14,7 +15,6 @@
     body {
       margin: 0;
       min-height: 100vh;
-      min-height: 100dvh;
       overflow: hidden;
       font-family: Arial, sans-serif;
       background: linear-gradient(
@@ -30,7 +30,6 @@
 
     .container {
       min-height: 100vh;
-      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -45,13 +44,9 @@
       margin-bottom: 25px;
     }
 
-    h2, p {
-      color: #a32357;
-    }
-
     .panda {
       width: 230px;
-      max-width: 70vw;
+      max-width: 75vw;
       height: auto;
       border-radius: 20px;
       margin: 15px 0;
@@ -61,7 +56,6 @@
     .buttons {
       display: flex;
       justify-content: center;
-      align-items: center;
       gap: 25px;
       margin-top: 30px;
       min-height: 55px;
@@ -75,46 +69,29 @@
       font-size: 18px;
       font-weight: bold;
       cursor: pointer;
-      font-family: inherit;
+      transition: transform 0.2s;
     }
 
     #yesBtn {
       background: #4caf50;
       box-shadow: 0 4px 12px #a0cfa2;
-      transition: transform 0.2s;
     }
 
     #yesBtn:hover {
       transform: scale(1.15);
     }
 
-    
-#noBtn {
-  background: #e74c3c;
-  position: relative;
-  z-index: 10;
-  cursor: pointer;
-  touch-action: none;
-  transition: transform 0.5s ease-out;
-  will-change: transform;
-}
-
-
-    .nextBtn {
-      background: #e879a2;
-      margin-top: 20px;
-      transition: transform 0.2s;
-    }
-
-    .nextBtn:hover {
-      transform: scale(1.08);
+    #noBtn {
+      background: #e74c3c;
+      position: relative;
+      z-index: 10;
+      touch-action: none;
     }
 
     @keyframes float {
       0%, 100% {
         transform: translateY(0);
       }
-
       50% {
         transform: translateY(-12px);
       }
@@ -124,7 +101,6 @@
       0%, 100% {
         background-position: 0% 50%;
       }
-
       50% {
         background-position: 100% 50%;
       }
@@ -134,7 +110,7 @@
 
 <body>
 
-  <main class="container" id="main">
+  <div class="container">
 
     <h1>Will you go on a date with me? 💕</h1>
 
@@ -149,138 +125,104 @@
       <button id="noBtn">No ❤️</button>
     </div>
 
-  </main>
+  </div>
 
- 
-<script>
-  const noBtn = document.getElementById("noBtn");
-  const yesBtn = document.getElementById("yesBtn");
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
 
-  let offsetX = 0;
-  let offsetY = 0;
-  let lastDodge = 0;
+    let lastMove = 0;
 
-  function dodge(mouseX, mouseY) {
-    const rect = noBtn.getBoundingClientRect();
+    // Teleport No button to a random position
+    function moveNoButton() {
+      const margin = 15;
+      const width = noBtn.offsetWidth;
+      const height = noBtn.offsetHeight;
 
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+      const maxX = Math.max(
+        margin,
+        window.innerWidth - width - margin
+      );
 
-    // Find direction away from mouse
-    let dx = centerX - mouseX;
-    let dy = centerY - mouseY;
+      const maxY = Math.max(
+        margin,
+        window.innerHeight - height - margin
+      );
 
-    let distance = Math.hypot(dx, dy);
+      const x = margin +
+        Math.random() * (maxX - margin);
 
-    if (distance < 1) {
-      dx = Math.random() - 0.5;
-      dy = Math.random() - 0.5;
-      distance = Math.hypot(dx, dy) || 1;
+      const y = margin +
+        Math.random() * (maxY - margin);
+
+      noBtn.style.position = "fixed";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
     }
 
-    dx /= distance;
-    dy /= distance;
+    // Dodge when mouse approaches
+    document.addEventListener("pointermove", (event) => {
+      if (event.pointerType === "touch") return;
 
-    // Move 160 pixels away
-    const moveDistance = 160;
+      const rect = noBtn.getBoundingClientRect();
 
-    let newX = offsetX + dx * moveDistance;
-    let newY = offsetY + dy * moveDistance;
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
 
-    // Keep the button inside the viewport
-    const baseLeft = rect.left - offsetX;
-    const baseTop = rect.top - offsetY;
+      const distance = Math.hypot(
+        event.clientX - centerX,
+        event.clientY - centerY
+      );
 
-    newX = Math.max(
-      10 - baseLeft,
-      Math.min(
-        window.innerWidth - rect.width - 10 - baseLeft,
-        newX
-      )
-    );
+      if (distance < 110 && Date.now() - lastMove > 150) {
+        lastMove = Date.now();
+        moveNoButton();
+      }
+    });
 
-    newY = Math.max(
-      10 - baseTop,
-      Math.min(
-        window.innerHeight - rect.height - 10 - baseTop,
-        newY
-      )
-    );
+    // Dodge taps on mobile
+    noBtn.addEventListener("touchstart", (event) => {
+      event.preventDefault();
+      moveNoButton();
+    }, { passive: false });
 
-    offsetX = newX;
-    offsetY = newY;
+    // Fallback if No is clicked
+    noBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      moveNoButton();
+    });
 
-    // Smooth movement handled by CSS transition
-    noBtn.style.transform =
-      `translate(${offsetX}px, ${offsetY}px)`;
-  }
+    // Yes button celebration
+    yesBtn.addEventListener("click", () => {
+      document.querySelector(".container").innerHTML = `
+        <h1>YAYYYYY!! 💗</h1>
 
-  // Move away when the mouse gets close
-  document.addEventListener("pointermove", (event) => {
-    if (event.pointerType === "touch") return;
+        <img
+          src="panda.jpg"
+          class="panda"
+          alt="Happy panda"
+        >
 
-    const rect = noBtn.getBoundingClientRect();
+        <h2 style="color:#a32357">
+          I knew you'd say yes!
+        </h2>
 
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
+        <p style="color:#a32357">
+          Now let's plan our date ♡
+        </p>
 
-    const distance = Math.hypot(
-      event.clientX - centerX,
-      event.clientY - centerY
-    );
+        <button
+          style="background:#e879a2;margin-top:20px"
+          onclick="startPlanning()">
+          Plan Our Date →
+        </button>
+      `;
+    });
 
-    if (distance < 140 && Date.now() - lastDodge > 500) {
-      lastDodge = Date.now();
-      dodge(event.clientX, event.clientY);
+    function startPlanning() {
+      alert("Time to choose our dinner! 🍝");
     }
-  });
-
-  // Move away from mobile taps
-  noBtn.addEventListener("touchstart", (event) => {
-    event.preventDefault();
-
-    const touch = event.touches[0];
-    dodge(touch.clientX, touch.clientY);
-  }, { passive: false });
-
-  // Fallback if someone clicks No
-  noBtn.addEventListener("click", (event) => {
-    event.preventDefault();
-
-    const rect = noBtn.getBoundingClientRect();
-
-    dodge(
-      rect.left + rect.width / 2,
-      rect.top + rect.height / 2
-    );
-  });
-
-  // Yes button celebration
-  yesBtn.addEventListener("click", () => {
-    document.querySelector(".container").innerHTML = `
-      <h1>YAYYYYY!! 💗</h1>
-
-      <img src="panda.jpg"
-           class="panda"
-           alt="Happy panda">
-
-      <h2>I knew you'd say yes! 🥰</h2>
-
-      <p>Now let's plan our perfect date ♡</p>
-
-      <button
-        style="background:#e879a2;margin-top:20px"
-        onclick="startPlanning()">
-        Plan Our Date →
-      </button>
-    `;
-  });
-
-  function startPlanning() {
-    alert("Time to choose our dinner! 🍝");
-  }
-</script>
+  </script>
 
 </body>
 </html>
-
