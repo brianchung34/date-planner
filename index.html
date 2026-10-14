@@ -487,6 +487,146 @@
   }
 }
 
+/* ICE CREAM SELECTION PAGE */
+
+.icecream-page {
+  width: 100%;
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 15px;
+  text-align: center;
+}
+
+.icecream-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.icecream-card {
+  width: 100%;
+  min-width: 0;
+  height: 285px;
+  background: #fff5f9;
+  border: 3px solid transparent;
+  border-radius: 18px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(130,40,80,0.12);
+  transition: transform 0.25s, border-color 0.25s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icecream-card:hover {
+  transform: translateY(-5px);
+}
+
+.icecream-card.selected {
+  border-color: #e34d90;
+  background: #ffe0ee;
+}
+
+.icecream-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.icecream-card h3 {
+  color: #a32357;
+  font-size: 17px;
+  margin: 12px 0;
+}
+
+.icecream-card .yelp-link {
+  margin-top: auto;
+  margin-bottom: 10px;
+}
+
+.icecream-custom-icon {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+  background: #ffe4ef;
+  border-radius: 12px;
+}
+
+.icecream-custom-input {
+  display: none;
+  margin: 20px auto 0;
+  width: 100%;
+  max-width: 350px;
+  padding: 12px;
+  border: 2px solid #e879a2;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.icecream-custom-input.visible {
+  display: block;
+}
+
+.icecream-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.icecream-navigation button {
+  background: #e879a2;
+  border-radius: 25px;
+}
+
+.icecream-message {
+  color: #a32357;
+  font-weight: bold;
+  min-height: 24px;
+  margin-top: 18px;
+}
+
+/* Shared Back button for Drinks and Ice Cream */
+.drinks-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.drinks-navigation .back-button,
+.icecream-navigation .back-button {
+  background: #c98ba6;
+}
+
+@media (max-width: 800px) {
+  .icecream-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body:has(.icecream-page) {
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 450px) {
+  .icecream-options {
+    grid-template-columns: 1fr;
+    max-width: 350px;
+    margin: 25px auto;
+  }
+
+  .icecream-navigation,
+  .drinks-navigation {
+    flex-wrap: wrap;
+  }
+}
+
   </style>
 </head>
 
@@ -837,8 +977,14 @@ function chooseDessertType(type) {
   localStorage.setItem("dessertType", type);
 
   if (type === "Drinks") {
+    selectedIceCream = "";
+    localStorage.removeItem("iceCreamChoice");
+    localStorage.removeItem("customIceCream");
     startDrinksPage();
   } else {
+    selectedDrink = "";
+    localStorage.removeItem("drinkChoice");
+    localStorage.removeItem("customDrink");
     startIceCreamPage();
   }
 }
@@ -865,7 +1011,7 @@ function startDrinksPage() {
           <img src="rok.jpg" alt="ROK matcha">
           <h3>ROK</h3>
           <a class="yelp-link"
-             href="https://www.yelp.com/search?find_desc=ROK+Coffee+and+Tea&find_loc=Los+Angeles%2C+CA"
+             href="https://www.yelp.com/biz/rok-coffee-and-tea-wilshire-los-angeles-2?ylpcid=c45d5d9994b64a609625d2a5fae2b29cea506f6d"
              target="_blank"
              rel="noopener noreferrer"
              onclick="event.stopPropagation()">
@@ -879,7 +1025,7 @@ function startDrinksPage() {
           <img src="3cat.jpg" alt="3CAT drinks">
           <h3>3CAT</h3>
           <a class="yelp-link"
-             href="https://www.yelp.com/search?find_desc=3CAT+Handcrafted+Beverage&find_loc=Los+Angeles%2C+CA"
+             href="https://www.yelp.com/biz/3cat-handcrafted-beverage-los-angeles?osq=3Cat+Handcrafted+Beverage"
              target="_blank"
              rel="noopener noreferrer"
              onclick="event.stopPropagation()">
@@ -906,11 +1052,16 @@ function startDrinksPage() {
 
       <p class="drinks-message" id="drinksMessage"></p>
 
-      <div class="drinks-navigation">
-        <button onclick="saveDrink()">
-          Save My Choice ♡
-        </button>
-      </div>
+     <div class="drinks-navigation">
+  <button class="back-button"
+          onclick="startDessertPage()">
+    ← Back
+  </button>
+
+  <button onclick="saveDrink()">
+    Save My Choice ♡
+  </button>
+</div>
 
     </div>
   `;
@@ -969,7 +1120,7 @@ function saveDrink() {
   }
 
   localStorage.setItem("drinkChoice", selectedDrink);
-
+  localStorage.setItem("dessertType", "Drinks");
   const finalChoice = selectedDrink === "Your Choice"
     ? document.getElementById("customDrink").value.trim()
     : selectedDrink;
@@ -978,14 +1129,160 @@ function saveDrink() {
     "Yay! " + finalChoice + " it is! 💗";
 }
 
+
+let selectedIceCream =
+  localStorage.getItem("iceCreamChoice") || "";
+
 function startIceCreamPage() {
   document.querySelector(".container").innerHTML = `
-    <h1>Ice Cream 🍦💕</h1>
-    <p style="color:#a32357">
-      Let's pick our ice cream!
-    </p>
+    <div class="icecream-page">
+
+      <h1>Ice Cream? 🍦💕</h1>
+
+      <p class="museum-subtitle">
+        Where should we get ice cream? ♡
+      </p>
+
+      <div class="icecream-options">
+
+        <div class="icecream-card"
+             data-icecream="Holy Roly"
+             onclick="chooseIceCream('Holy Roly')">
+          <img src="holyroly.jpg" alt="Holy Roly ice cream">
+          <h3>Holy Roly</h3>
+          <a class="yelp-link"
+             href="https://www.yelp.com/biz/holy-roly-ice-cream-los-angeles?osq=Holy+Roly+Ice+Cream"
+             target="_blank"
+             rel="noopener noreferrer"
+             onclick="event.stopPropagation()">
+            View on Yelp ↗
+          </a>
+        </div>
+
+        <div class="icecream-card"
+             data-icecream="Bingsoo"
+             onclick="chooseIceCream('Bingsoo')">
+          <img src="bingsoo.jpg" alt="Bingsoo dessert">
+          <h3>Bingsoo</h3>
+          <a class="yelp-link"
+             href="https://www.yelp.com/biz/oakobing-los-angeles?ylpcid=dd53058110d0415fb3a283aeb107593b56d4bb42"
+             target="_blank"
+             rel="noopener noreferrer"
+             onclick="event.stopPropagation()">
+            View on Yelp ↗
+          </a>
+        </div>
+
+        <div class="icecream-card"
+             data-icecream="626 Ice Cream"
+             onclick="chooseIceCream('626 Ice Cream')">
+          <img src="626.jpg" alt="626 Ice Cream">
+          <h3>626 Ice Cream</h3>
+          <a class="yelp-link"
+             href="https://www.yelp.com/biz/626-ice-cream-arcadia-3?osq=626+Ice+Cream"
+             target="_blank"
+             rel="noopener noreferrer"
+             onclick="event.stopPropagation()">
+            View on Yelp ↗
+          </a>
+        </div>
+
+        <div class="icecream-card"
+             data-icecream="Your Choice"
+             onclick="chooseIceCream('Your Choice')">
+          <div class="icecream-custom-icon">🍦💗</div>
+          <h3>Your Choice ♡</h3>
+        </div>
+
+      </div>
+
+      <input
+        id="customIceCream"
+        class="icecream-custom-input"
+        type="text"
+        placeholder="Where do you wanna go? 💕"
+        maxlength="100"
+      >
+
+      <p class="icecream-message" id="icecreamMessage"></p>
+
+      <div class="icecream-navigation">
+        <button class="back-button"
+                onclick="startDessertPage()">
+          ← Back
+        </button>
+
+        <button onclick="saveIceCream()">
+          Save My Choice ♡
+        </button>
+      </div>
+
+    </div>
   `;
+
+  if (selectedIceCream) {
+    chooseIceCream(selectedIceCream);
+  }
+
+  const savedCustom =
+    localStorage.getItem("customIceCream");
+
+  if (savedCustom) {
+    document.getElementById("customIceCream").value =
+      savedCustom;
+  }
 }
+
+function chooseIceCream(icecream) {
+  selectedIceCream = icecream;
+
+  document.querySelectorAll(".icecream-card").forEach(card => {
+    card.classList.toggle(
+      "selected",
+      card.dataset.icecream === icecream
+    );
+  });
+
+  document.getElementById("customIceCream").classList.toggle(
+    "visible",
+    icecream === "Your Choice"
+  );
+
+  document.getElementById("icecreamMessage").textContent =
+    icecream + " 💗";
+}
+
+function saveIceCream() {
+  if (!selectedIceCream) {
+    document.getElementById("icecreamMessage").textContent =
+      "Pick an ice cream spot first! 💕";
+    return;
+  }
+
+  let finalChoice = selectedIceCream;
+
+  if (selectedIceCream === "Your Choice") {
+    finalChoice =
+      document.getElementById("customIceCream").value.trim();
+
+    if (!finalChoice) {
+      document.getElementById("icecreamMessage").textContent =
+        "Tell me where you wanna go! 💗";
+      return;
+    }
+
+    localStorage.setItem("customIceCream", finalChoice);
+  } else {
+    localStorage.removeItem("customIceCream");
+  }
+
+  localStorage.setItem("iceCreamChoice", selectedIceCream);
+  localStorage.setItem("dessertType", "Ice Cream");
+
+  document.getElementById("icecreamMessage").textContent =
+    "Yay! " + finalChoice + " it is! 💗";
+}
+
 
 
   </script>
