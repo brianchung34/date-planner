@@ -210,6 +210,95 @@
   }
 }
 
+/* PAGE 3 - RESTAURANT SELECTION */
+
+.restaurant-page {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px 15px;
+  text-align: center;
+}
+
+.restaurant-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.restaurant-card {
+  min-width: 0;
+  background: #fff5f9;
+  border: 3px solid transparent;
+  border-radius: 18px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(130,40,80,0.12);
+  transition: transform 0.25s, border-color 0.25s;
+}
+
+.restaurant-card:hover {
+  transform: translateY(-5px);
+}
+
+.restaurant-card.selected {
+  border-color: #e34d90;
+  background: #ffe0ee;
+}
+
+.restaurant-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+.restaurant-card h3 {
+  color: #a32357;
+  font-size: 17px;
+  margin: 12px 0;
+  min-height: 42px;
+}
+
+.yelp-link {
+  display: inline-block;
+  color: #d43b73;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-bottom: 10px;
+}
+
+.restaurant-navigation {
+  margin-top: 25px;
+}
+
+.restaurant-navigation button {
+  background: #e879a2;
+  border-radius: 25px;
+}
+
+.restaurant-message {
+  color: #a32357;
+  font-weight: bold;
+  min-height: 24px;
+  margin-top: 20px;
+}
+
+@media (max-width: 650px) {
+  .restaurant-options {
+    grid-template-columns: 1fr;
+    max-width: 350px;
+    margin: 25px auto;
+  }
+
+  body:has(.restaurant-page) {
+    overflow-y: auto;
+  }
+}
+
   </style>
 </head>
 
@@ -409,6 +498,7 @@ function chooseMuseum(museum) {
     museum + " 💗";
 }
 
+
 function saveMuseum() {
   if (!selectedMuseum) {
     document.getElementById("museumMessage").textContent =
@@ -418,8 +508,110 @@ function saveMuseum() {
 
   localStorage.setItem("museumChoice", selectedMuseum);
 
-  document.getElementById("museumMessage").textContent =
-    "Yay! " + selectedMuseum + " it is! 💗";
+  // Go to Page 3
+  startRestaurantPage();
+}
+
+let selectedRestaurant =
+  localStorage.getItem("restaurantChoice") || "";
+
+function startRestaurantPage() {
+  document.querySelector(".container").innerHTML = `
+    <div class="restaurant-page">
+
+      <h1>Where should we eat after? 🍽️💕</h1>
+
+      <p class="museum-subtitle">
+        Pick our dinner spot! ♡
+      </p>
+
+      <div class="restaurant-options">
+
+        <div class="restaurant-card"
+             data-restaurant="BCD"
+             onclick="chooseRestaurant('BCD')">
+          <img src="bcd.jpg" alt="BCD food">
+          <h3>BCD</h3>
+          <a class="yelp-link"
+             href="https://www.yelp.com/biz/bcd-tofu-house-los-angeles?osq=bcd"
+             target="_blank"
+             rel="noopener noreferrer"
+             onclick="event.stopPropagation()">
+            View on Yelp ↗
+          </a>
+        </div>
+
+        <div class="restaurant-card"
+             data-restaurant="Here Fishy Fishy"
+             onclick="chooseRestaurant('Here Fishy Fishy')">
+          <img src="fish.jpg" alt="Sushi platter">
+          <h3>Here Fishy Fishy</h3>
+          <a class="yelp-link"
+             href="https://www.yelp.com/biz/here-fishy-fishy-wilshire-blvd-los-angeles-7?osq=here+fishy+fishy"
+             target="_blank"
+             rel="noopener noreferrer"
+             onclick="event.stopPropagation()">
+            View on Yelp ↗
+          </a>
+        </div>
+
+        <div class="restaurant-card"
+             data-restaurant="Danbi"
+             onclick="chooseRestaurant('Danbi')">
+          <img src="danbi.jpg" alt="Danbi food">
+          <h3>Danbi</h3>
+          <a class="yelp-link"
+             href="https://www.yelp.com/biz/danbi-los-angeles-2?osq=Danbi+Korean+Restaurant"
+             target="_blank"
+             rel="noopener noreferrer"
+             onclick="event.stopPropagation()">
+            View on Yelp ↗
+          </a>
+        </div>
+
+      </div>
+
+      <p class="restaurant-message" id="restaurantMessage"></p>
+
+      <div class="restaurant-navigation">
+        <button onclick="saveRestaurant()">
+          Save My Choice ♡
+        </button>
+      </div>
+
+    </div>
+  `;
+
+  if (selectedRestaurant) {
+    chooseRestaurant(selectedRestaurant);
+  }
+}
+
+function chooseRestaurant(restaurant) {
+  selectedRestaurant = restaurant;
+
+  document.querySelectorAll(".restaurant-card").forEach(card => {
+    card.classList.toggle(
+      "selected",
+      card.dataset.restaurant === restaurant
+    );
+  });
+
+  document.getElementById("restaurantMessage").textContent =
+    restaurant + " 💗";
+}
+
+function saveRestaurant() {
+  if (!selectedRestaurant) {
+    document.getElementById("restaurantMessage").textContent =
+      "Pick a restaurant first! 💕";
+    return;
+  }
+
+  localStorage.setItem("restaurantChoice", selectedRestaurant);
+
+  document.getElementById("restaurantMessage").textContent =
+    "Yay! " + selectedRestaurant + " it is! 💗";
 }
 
   </script>
