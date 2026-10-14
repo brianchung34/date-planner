@@ -814,8 +814,17 @@ body:has(.final-page) {
     </div>
 
   </div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    
+const SUPABASE_URL = "https://dftfokrbasdzdfjsvtrn.supabase.co/rest/v1/";
+const SUPABASE_KEY = "sb_publishable_yfgCtWAlOHHDmM6WUtVXeg_uvNvIocl";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
 
@@ -1261,7 +1270,7 @@ function chooseDrink(drink) {
     drink + " 💗";
 }
 
-function saveDrink() {
+async function saveDrink() {
   if (!selectedDrink) {
     document.getElementById("drinksMessage").textContent =
       "Pick a drink spot first! 💕";
@@ -1289,7 +1298,11 @@ function saveDrink() {
     ? document.getElementById("customDrink").value.trim()
     : selectedDrink;
 
-startFinalPage();
+const saved = await saveDateOnline();
+
+if (saved) {
+  startFinalPage();
+}
 }
 
 
@@ -1415,7 +1428,7 @@ function chooseIceCream(icecream) {
     icecream + " 💗";
 }
 
-function saveIceCream() {
+async function saveIceCream() {
   if (!selectedIceCream) {
     document.getElementById("icecreamMessage").textContent =
       "Pick an ice cream spot first! 💕";
@@ -1442,7 +1455,11 @@ function saveIceCream() {
   localStorage.setItem("iceCreamChoice", selectedIceCream);
   localStorage.setItem("dessertType", "Ice Cream");
 
- startFinalPage();
+const saved = await saveDateOnline();
+
+if (saved) {
+  startFinalPage();
+}
 }
 
 
@@ -1492,6 +1509,55 @@ function openLetter() {
 }
 
 
+async function saveDateOnline() {
+  const museum = localStorage.getItem("museumChoice");
+  const restaurant = localStorage.getItem("restaurantChoice");
+  const dessertType = localStorage.getItem("dessertType");
+
+  let dessertChoice;
+
+  if (dessertType === "Drinks") {
+    dessertChoice = localStorage.getItem("drinkChoice");
+
+    if (dessertChoice === "Your Choice") {
+      dessertChoice =
+        localStorage.getItem("customDrink");
+    }
+  } else {
+    dessertChoice =
+      localStorage.getItem("iceCreamChoice");
+
+    if (dessertChoice === "Your Choice") {
+      dessertChoice =
+        localStorage.getItem("customIceCream");
+    }
+  }
+
+  if (!museum || !restaurant ||
+      !dessertType || !dessertChoice) {
+    alert("Please complete all your selections!");
+    return false;
+  }
+
+  try {
+    const { error } = await db
+      .from("date_selections")
+      .insert({
+        museum: museum,
+        restaurant: restaurant,
+        dessert_type: dessertType,
+        dessert_choice: dessertChoice
+      });
+
+    if (error) throw error;
+
+    return true;
+  } catch (error) {
+    console.error("Error saving date:", error);
+    alert("Something went wrong saving your date. Please try again!");
+    return false;
+  }
+}
   </script>
 
 </body>
