@@ -373,6 +373,120 @@
   }
 }
 
+/* DRINKS SELECTION PAGE */
+
+.drinks-page {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px 15px;
+  text-align: center;
+}
+
+.drinks-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 30px;
+}
+
+.drinks-card {
+  width: 100%;
+  min-width: 0;
+  height: 285px;
+  background: #fff5f9;
+  border: 3px solid transparent;
+  border-radius: 18px;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(130,40,80,0.12);
+  transition: transform 0.25s, border-color 0.25s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.drinks-card:hover {
+  transform: translateY(-5px);
+}
+
+.drinks-card.selected {
+  border-color: #e34d90;
+  background: #ffe0ee;
+}
+
+.drinks-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.drinks-card h3 {
+  color: #a32357;
+  font-size: 18px;
+  margin: 12px 0;
+}
+
+.drinks-card .yelp-link {
+  margin-top: auto;
+  margin-bottom: 10px;
+}
+
+.drinks-custom-icon {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 65px;
+  background: #ffe4ef;
+  border-radius: 12px;
+}
+
+.drinks-custom-input {
+  display: none;
+  margin: 20px auto 0;
+  width: 100%;
+  max-width: 350px;
+  padding: 12px;
+  border: 2px solid #e879a2;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+.drinks-custom-input.visible {
+  display: block;
+}
+
+.drinks-navigation {
+  margin-top: 25px;
+}
+
+.drinks-navigation button {
+  background: #e879a2;
+  border-radius: 25px;
+}
+
+.drinks-message {
+  color: #a32357;
+  font-weight: bold;
+  min-height: 24px;
+  margin-top: 18px;
+}
+
+@media (max-width: 650px) {
+  .drinks-options {
+    grid-template-columns: 1fr;
+    max-width: 350px;
+    margin: 25px auto;
+  }
+
+  body:has(.drinks-page) {
+    overflow-y: auto;
+  }
+}
+
   </style>
 </head>
 
@@ -731,13 +845,137 @@ function chooseDessertType(type) {
 
 // Temporary pages until we add the actual choices
 
+
+let selectedDrink = localStorage.getItem("drinkChoice") || "";
+
 function startDrinksPage() {
   document.querySelector(".container").innerHTML = `
-    <h1>Drinks 🧋💕</h1>
-    <p style="color:#a32357">
-      Let's pick our drinks!
-    </p>
+    <div class="drinks-page">
+
+      <h1>Drinks? 🧋💕</h1>
+      <p class="museum-subtitle">
+        Where should we get drinks? ♡
+      </p>
+
+      <div class="drinks-options">
+
+        <div class="drinks-card"
+             data-drink="ROK"
+             onclick="chooseDrink('ROK')">
+          <img src="rok.jpg" alt="ROK matcha">
+          <h3>ROK</h3>
+          <a class="yelp-link"
+             href="https://www.yelp.com/search?find_desc=ROK+Coffee+and+Tea&find_loc=Los+Angeles%2C+CA"
+             target="_blank"
+             rel="noopener noreferrer"
+             onclick="event.stopPropagation()">
+            View on Yelp ↗
+          </a>
+        </div>
+
+        <div class="drinks-card"
+             data-drink="3CAT"
+             onclick="chooseDrink('3CAT')">
+          <img src="3cat.jpg" alt="3CAT drinks">
+          <h3>3CAT</h3>
+          <a class="yelp-link"
+             href="https://www.yelp.com/search?find_desc=3CAT+Handcrafted+Beverage&find_loc=Los+Angeles%2C+CA"
+             target="_blank"
+             rel="noopener noreferrer"
+             onclick="event.stopPropagation()">
+            View on Yelp ↗
+          </a>
+        </div>
+
+        <div class="drinks-card"
+             data-drink="Your Choice"
+             onclick="chooseDrink('Your Choice')">
+          <div class="drinks-custom-icon">💗🧋</div>
+          <h3>Your Choice ♡</h3>
+        </div>
+
+      </div>
+
+      <input
+        id="customDrink"
+        class="drinks-custom-input"
+        type="text"
+        placeholder="Where do you wanna go? 💕"
+        maxlength="100"
+      >
+
+      <p class="drinks-message" id="drinksMessage"></p>
+
+      <div class="drinks-navigation">
+        <button onclick="saveDrink()">
+          Save My Choice ♡
+        </button>
+      </div>
+
+    </div>
   `;
+
+  if (selectedDrink) {
+    chooseDrink(selectedDrink);
+  }
+
+  const savedCustomDrink = localStorage.getItem("customDrink");
+  if (savedCustomDrink) {
+    document.getElementById("customDrink").value = savedCustomDrink;
+  }
+}
+
+function chooseDrink(drink) {
+  selectedDrink = drink;
+
+  document.querySelectorAll(".drinks-card").forEach(card => {
+    card.classList.toggle(
+      "selected",
+      card.dataset.drink === drink
+    );
+  });
+
+  const customInput = document.getElementById("customDrink");
+
+  customInput.classList.toggle(
+    "visible",
+    drink === "Your Choice"
+  );
+
+  document.getElementById("drinksMessage").textContent =
+    drink + " 💗";
+}
+
+function saveDrink() {
+  if (!selectedDrink) {
+    document.getElementById("drinksMessage").textContent =
+      "Pick a drink spot first! 💕";
+    return;
+  }
+
+  if (selectedDrink === "Your Choice") {
+    const customDrink =
+      document.getElementById("customDrink").value.trim();
+
+    if (!customDrink) {
+      document.getElementById("drinksMessage").textContent =
+        "Tell me where you wanna go! 💗";
+      return;
+    }
+
+    localStorage.setItem("customDrink", customDrink);
+  } else {
+    localStorage.removeItem("customDrink");
+  }
+
+  localStorage.setItem("drinkChoice", selectedDrink);
+
+  const finalChoice = selectedDrink === "Your Choice"
+    ? document.getElementById("customDrink").value.trim()
+    : selectedDrink;
+
+  document.getElementById("drinksMessage").textContent =
+    "Yay! " + finalChoice + " it is! 💗";
 }
 
 function startIceCreamPage() {
