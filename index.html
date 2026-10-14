@@ -653,42 +653,19 @@
   font-size: 16px;
 }
 
-/* Envelope and hidden letter */
+
+/* ENVELOPE AND SECRET LETTER */
 
 .letter-scene {
   position: relative;
   width: 300px;
-  height: 270px;
+  height: 210px;
   margin: 35px auto 0;
-  perspective: 900px;
   cursor: pointer;
+  perspective: 900px;
 }
 
-.letter-paper {
-  position: absolute;
-  width: 260px;
-  height: 170px;
-  left: 20px;
-  bottom: 35px;
-  padding: 20px 15px;
-  background: #fffafc;
-  border-radius: 12px;
-  box-shadow: 0 3px 15px rgba(130,40,80,0.15);
-  transition: transform 1s ease;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.letter-paper p {
-  color: #a32357;
-  font-size: 16px;
-  line-height: 1.5;
-  margin: 5px 0;
-}
-
+/* Envelope body */
 .envelope-back {
   position: absolute;
   left: 0;
@@ -715,6 +692,7 @@
   z-index: 3;
 }
 
+/* Envelope flap */
 .envelope-flap {
   position: absolute;
   left: 0;
@@ -724,7 +702,7 @@
   background: #ffd0e2;
   clip-path: polygon(0 0, 100% 0, 50% 100%);
   transform-origin: top center;
-  transition: transform 0.8s ease, z-index 0s 0.4s;
+  transition: transform 0.7s ease;
   z-index: 4;
 }
 
@@ -738,35 +716,80 @@
   transition: opacity 0.3s;
 }
 
-.letter-scene.open .envelope-flap {
-  transform: rotateX(180deg);
-  z-index: 1;
+/* Secret letter is completely hidden initially */
+.letter-paper {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: min(440px, 90vw);
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 25px;
+  box-sizing: border-box;
+  background: #fffafc;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(130,40,80,0.18);
+  z-index: 6;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 30px) scale(0.8);
+  transition:
+    opacity 0.5s ease,
+    transform 0.7s ease,
+    visibility 0s linear 0.7s;
 }
 
-.letter-scene.open .letter-paper {
-  transform: translateY(-95px);
-  transition-delay: 0.35s;
+.letter-paper p {
+  color: #a32357;
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+
+/* Open envelope */
+.letter-scene.open .envelope-flap {
+  transform: rotateX(180deg);
 }
 
 .letter-scene.open .envelope-heart {
   opacity: 0;
 }
 
+/* Letter rises above the envelope */
+.letter-scene.open .letter-paper {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -65%);
+  transition:
+    opacity 0.5s ease 0.5s,
+    transform 0.7s ease 0.5s,
+    visibility 0s;
+}
+
+/* Give the opened letter enough space */
 .letter-scene.open {
-  height: 340px;
+  margin-top: 230px;
+  margin-bottom: 35px;
+  transition: margin-top 0.7s ease;
+}
+
+body:has(.final-page) {
+  overflow-y: auto;
 }
 
 @media (max-width: 650px) {
   .letter-scene {
-    transform: scale(0.85);
-    transform-origin: top center;
-    margin-bottom: -30px;
+    transform: none;
+    margin-bottom: 0;
   }
 
-  body:has(.final-page) {
-    overflow-y: auto;
+  .letter-scene.open {
+    margin-top: 230px;
   }
 }
+
 
   </style>
 </head>
