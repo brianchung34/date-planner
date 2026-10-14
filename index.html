@@ -825,6 +825,21 @@ const db = window.supabase.createClient(
   SUPABASE_KEY
 );
 
+/* Reset previous date selections on a fresh visit */
+const dateSelectionKeys = [
+  "museumChoice",
+  "restaurantChoice",
+  "dessertType",
+  "drinkChoice",
+  "customDrink",
+  "iceCreamChoice",
+  "customIceCream"
+];
+
+dateSelectionKeys.forEach(key => {
+  localStorage.removeItem(key);
+});
+
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
 
