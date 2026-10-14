@@ -112,6 +112,104 @@
         background-position: 100% 50%;
       }
     }
+    
+/* PAGE 2 - MUSEUM SELECTION */
+
+.museum-page {
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 30px 15px;
+  text-align: center;
+}
+
+.museum-page h1 {
+  margin-bottom: 10px;
+}
+
+.museum-subtitle {
+  color: #a32357;
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.museum-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+.museum-card {
+  width: 100%;
+  height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #fff5f9;
+  border: 3px solid transparent;
+  border-radius: 18px;
+  padding: 10px;
+  cursor: pointer;
+  color: #a32357;
+  box-shadow: 0 5px 18px rgba(130,40,80,0.12);
+  transition: transform 0.25s, border-color 0.25s;
+}
+
+.museum-card:hover {
+  transform: translateY(-5px);
+}
+
+.museum-card.selected {
+  border-color: #e34d90;
+  background: #ffe0ee;
+}
+
+.museum-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.museum-card h3 {
+  margin: auto 0;
+  font-size: 17px;
+  text-align: center;
+}
+
+.museum-navigation {
+  margin-top: 25px;
+}
+
+.museum-navigation button {
+  background: #e879a2;
+  border-radius: 25px;
+}
+
+.museum-message {
+  color: #a32357;
+  margin-top: 20px;
+  font-weight: bold;
+  min-height: 24px;
+}
+
+@media (max-width: 650px) {
+  .museum-options {
+    grid-template-columns: 1fr;
+    max-width: 350px;
+    margin: auto;
+  }
+
+  .museum-card {
+    height: 230px;
+  }
+
+  body:has(.museum-page) {
+    overflow-y: auto;
+  }
+}
+
   </style>
 </head>
 
@@ -243,9 +341,87 @@ function moveNoButton() {
       `;
     });
 
-    function startPlanning() {
-      alert("Time to choose our dinner! 🍝");
-    }
+    
+let selectedMuseum = localStorage.getItem("museumChoice") || "";
+
+function startPlanning() {
+  document.querySelector(".container").innerHTML = `
+    <div class="museum-page">
+
+      <h1>Larping as a Museum Couple 💗</h1>
+
+      <p class="museum-subtitle">
+        Where should we go together? 🥰
+      </p>
+
+      <div class="museum-options">
+
+        <button class="museum-card"
+                data-museum="The Getty"
+                onclick="chooseMuseum('The Getty')">
+          <img src="getty.jpg" alt="The Getty">
+          <h3>The Getty</h3>
+        </button>
+
+        <button class="museum-card"
+                data-museum="Griffith Observatory"
+                onclick="chooseMuseum('Griffith Observatory')">
+          <img src="griffith.jpg" alt="Griffith Observatory">
+          <h3>Griffith Observatory</h3>
+        </button>
+
+        <button class="museum-card"
+                data-museum="LACMA"
+                onclick="chooseMuseum('LACMA')">
+          <img src="lacma.jpg" alt="LACMA">
+          <h3>LACMA</h3>
+        </button>
+
+      </div>
+
+      <p class="museum-message" id="museumMessage"></p>
+
+      <div class="museum-navigation">
+        <button onclick="saveMuseum()">
+          Save My Choice ♡
+        </button>
+      </div>
+
+    </div>
+  `;
+
+  if (selectedMuseum) {
+    chooseMuseum(selectedMuseum);
+  }
+}
+
+function chooseMuseum(museum) {
+  selectedMuseum = museum;
+
+  document.querySelectorAll(".museum-card").forEach(card => {
+    card.classList.toggle(
+      "selected",
+      card.dataset.museum === museum
+    );
+  });
+
+  document.getElementById("museumMessage").textContent =
+    museum + " 💗";
+}
+
+function saveMuseum() {
+  if (!selectedMuseum) {
+    document.getElementById("museumMessage").textContent =
+      "Pick a museum first! 💕";
+    return;
+  }
+
+  localStorage.setItem("museumChoice", selectedMuseum);
+
+  document.getElementById("museumMessage").textContent =
+    "Yay! " + selectedMuseum + " it is! 💗";
+}
+
   </script>
 
 </body>
